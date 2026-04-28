@@ -1,0 +1,92 @@
+========================================
+QUICK REVISION SHEET
+Lab: More Details about Classes
+========================================
+
+READ THIS BEFORE YOU START CODING.
+Takes ~2 minutes.
+
+----------------------------------------
+1. CONST MEMBER FUNCTIONS
+----------------------------------------
+A const method promises NOT to change the object.
+Write "const" after the parameter list.
+
+  int getValue() const { return value; }   // OK
+  void setValue(int v) const { value = v; } // ERROR — can't modify
+
+A CONST OBJECT can ONLY call const methods.
+
+  const MyClass obj(5);
+  obj.getValue();    // OK  (const method)
+  obj.setValue(10);  // COMPILE ERROR
+
+Rule: If a method doesn't modify the object -> make it const.
+
+----------------------------------------
+2. MEMBER INITIALIZER LIST
+----------------------------------------
+Use ": member(value)" before the constructor body.
+
+  class Point {
+      double x, y;
+  public:
+      Point(double x, double y) : x(x), y(y) {}
+  };
+
+WHY it matters:
+- Required when a member has no default constructor
+- More efficient than assignment inside the body
+
+  // WRONG (for composed objects with no default ctor):
+  Rectangle(int x) { topLeft = Point(x, 0); }  // ERROR
+
+  // CORRECT:
+  Rectangle(int x) : topLeft(x, 0) {}
+
+----------------------------------------
+3. FRIEND FUNCTION
+----------------------------------------
+A friend function is NOT a member, but can access private data.
+Declare it INSIDE the class with "friend":
+
+  class Box {
+      int secret;
+  public:
+      friend void printSecret(const Box& b);
+  };
+
+  void printSecret(const Box& b) {
+      std::cout << b.secret;  // OK — it's a friend
+  }
+
+FRIEND CLASS: all methods of the other class get access.
+
+  friend class Inspector;
+
+----------------------------------------
+4. COMPOSITION
+----------------------------------------
+An object can contain other objects as members.
+
+  class Rectangle {
+      Point topLeft;      // Point is a MEMBER
+      Point bottomRight;
+  };
+
+Because Point has no default constructor, Rectangle MUST
+use a member initializer list:
+
+  Rectangle(double x1,double y1,double x2,double y2)
+      : topLeft(x1,y1), bottomRight(x2,y2) {}
+
+----------------------------------------
+QUICK CHECKLIST
+----------------------------------------
+[ ] getter methods have "const" at the end
+[ ] constructor uses ": member(val)" syntax
+[ ] friend declared INSIDE the class body
+[ ] const object only calls const methods
+[ ] std::abs() used for width/height (negative coords)
+
+========================================
